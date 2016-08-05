@@ -4,7 +4,7 @@ var onRun = function(context) {
   var one, two, inside, outside;
 
   if([selection count] < 2 || [selection count] > 2) {
-    [doc showMessage: "Select two layers to get margin."];
+    [doc showMessage: "Select two layers to get margins."];
     return false;
   }
 
@@ -21,7 +21,7 @@ var onRun = function(context) {
   }
 
   if(!inside) {
-    [doc showMessage: "Cannot determine margin. Neither layer is inside the other."];
+    [doc showMessage: "Cannot determine margins. Neither layer is inside the other."];
     return false;
   }
 
