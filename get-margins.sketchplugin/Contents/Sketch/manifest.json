@@ -1,0 +1,25 @@
+{
+  "author" : "Peter Wooley",
+  "commands" : [
+    {
+      "script" : "script.cocoascript",
+      "name" : "Get Margins",
+      "shortcut": "cmd + shift + m",
+      "handlers" : {
+        "run" : "onRun"
+      },
+      "identifier" : "get-margins"
+    }
+  ],
+  "menu" : {
+    "items" : [
+      "get-margins"
+    ],
+    "title" : "Margins"
+  },
+  "identifier" : "com.peterwooley.get-margins",
+  "version" : "1.0.0",
+  "description" : "Gets the margins between an inner and outer layer and then copies the results to the clipboard as CSS.",
+  "authorEmail" : "peterwooly@gmail.com",
+  "name" : "get-margins"
+}

@@ -1,0 +1,116 @@
+var onRun = function(context) {
+  var doc = context.document;
+  var selection = context.selection;
+  var one, two, inside, outside;
+
+  if([selection count] < 2 || [selection count] > 2) {
+    [doc showMessage: "Select two layers to get margin."];
+    return false;
+  }
+
+  one = getDetails(selection[0]);
+  two = getDetails(selection[1]);
+
+  if(isInside(one, two)) {
+    inside = one;
+    outside = two;
+  }
+  if(isInside(two, one)) {
+    inside = two;
+    outside = one;
+  }
+
+  if(!inside) {
+    [doc showMessage: "Cannot determine margin. Neither layer is inside the other."];
+    return false;
+  }
+
+  var margins = getMargins(inside, outside);
+
+  copyMarginsToClipboard(margins);
+  showMarginsToUser(doc, margins, inside, outside);
+};
+
+function showMarginsToUser(doc, m, i, o) {
+  [doc showMessage: "Margins between layer \"" + i.name + "\" and layer \""+o.name+"\" ("+m.top+", "+m.right+", "+m.bottom+", "+m.left+") have been copied to your clipboard."];
+}
+
+function copyMarginsToClipboard(m) {
+  var copy = "margin: "+m.top+"px "+m.right+"px "+m.bottom+"px "+m.left+"px;";
+  clipboard.set(copy);
+}
+
+function getMargins(inside, outside) {
+  var margins = {
+    top: inside.y - outside.y,
+    right: (outside.x + outside.width) - (inside.x+inside.width),
+    bottom: (outside.y + outside.height) - (inside.y+inside.height),
+    left: inside.x - outside.x
+  }
+
+  Object.keys(margins).map(function(k) {
+    margins[k] = Math.round(margins[k]*100)/100;
+  });
+
+  return margins;
+}
+
+function getDetails(layer) {
+  var details = getDimensions(layer);
+  details.name = [layer name];
+  return details;
+
+}
+
+function getDimensions(layer) {
+  return {
+    x: [[layer frame] x],
+    y: [[layer frame] y],
+    height: [[layer frame] height],
+    width: [[layer frame] width]
+  }
+}
+
+function isInside(inner, outer) {
+  if (inner.x < outer.x) return false;
+  if (inner.y < outer.y) return false;
+  if ((inner.width + inner.x) > (outer.width + outer.x)) return false;
+  if ((inner.height + inner.y) > (outer.height + outer.y)) return false;
+
+  return true;
+}
+
+// Using JSTalk clipboard handling snippet from https://gist.github.com/uhunkler/5465857 by Urs Hunkler
+var clipboard = {
+  // store the pasetboard object
+  pasteBoard : null,
+ 
+  // save the pasteboard object
+  init : function()
+  {
+    this.pasteBoard = NSPasteboard.generalPasteboard();
+  },
+  // set the clipboard to the given text
+  set : function( text )
+  {
+    if( typeof text === 'undefined' ) return null;
+ 
+    if( !this.pasteBoard )
+      this.init();
+ 
+    this.pasteBoard.declareTypes_owner( [ NSPasteboardTypeString ], null );
+    this.pasteBoard.setString_forType( text, NSPasteboardTypeString );
+ 
+    return true;
+  },
+  // get text from the clipbaoard
+  get : function()
+  {
+    if( !this.pasteBoard )
+      this.init();
+ 
+    var text = this.pasteBoard.stringForType( NSPasteboardTypeString );
+    
+    return text.toString();
+  }
+};
