@@ -1,4 +1,4 @@
-# Copy Color as HSLA Sketch Plugin
+# Get Margins Sketch Plugin
 A [Sketch](http://bohemiancoding.com/sketch) plugin to get the margins between an inner and outer layer and then copies the results to the clipboard as CSS.
 
 ## Install
